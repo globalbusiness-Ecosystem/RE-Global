@@ -9,13 +9,12 @@ export const metadata: Metadata = {
   title: "RE Platform - Global Real Estate Marketplace",
   description: "Buy, rent, invest & explore properties in 195 countries on Pi Network. Features 360° virtual tours, interactive world map, and tokenized real estate.",
   keywords: "real estate, buy property, rent apartments, invest, Pi Network, crypto",
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
   openGraph: {
     title: "RE Platform",
     description: "Global real estate marketplace on Pi Network",
     type: "website",
   },
-    generator: 'v0.app'
+  generator: 'v0.app'
 };
 
 export const viewport: Viewport = {
@@ -46,34 +45,6 @@ html {
         <meta name="apple-mobile-web-app-status-bar-style" content="black" />
         <meta name="apple-mobile-web-app-title" content="RE Platform" />
         <meta name="theme-color" content="#000000" />
-        <script src="https://sdk.minepi.com/pi-sdk.js"></script>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              const Pi = window.Pi;
-              Pi.init({ version: "2.0", sandbox: false });
-
-              async function authenticateUser() {
-                try {
-                  const scopes = ["payments", "username"];
-                  const auth = await Pi.authenticate(scopes, onIncompletePaymentFound);
-                  console.log("Pi Auth Success:", auth.user.username);
-                  return auth;
-                } catch(e) {
-                  console.error("Pi Auth Failed:", e);
-                }
-              }
-
-              function onIncompletePaymentFound(payment) {
-                console.log("Incomplete payment:", payment);
-              }
-
-              document.addEventListener("DOMContentLoaded", function() {
-                authenticateUser();
-              });
-            `,
-          }}
-        />
       </head>
       <body className="dark">
         <AppWrapper>{children}</AppWrapper>

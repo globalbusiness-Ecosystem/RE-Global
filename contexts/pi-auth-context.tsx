@@ -97,14 +97,12 @@ export function PiAuthProvider({ children }: { children: ReactNode }) {
     UserPurchaseBalance[] | null
   >(null);
 
-  // Log when provider mounts
   useEffect(() => {
-    console.log("[v0] [PiAuthProvider] Mounted, initializing...");
+    console.log("[PiAuthProvider] Mounted, initializing...");
   }, []);
 
-  // Log when isInitialized changes
   useEffect(() => {
-    console.log("[v0] [PiAuthProvider] isInitialized changed to:", isInitialized);
+    console.log("[PiAuthProvider] isInitialized changed to:", isInitialized);
   }, [isInitialized]);
 
   const fetchProducts = async (sdkInstance: SDKLiteInstance): Promise<void> => {
@@ -119,26 +117,24 @@ export function PiAuthProvider({ children }: { children: ReactNode }) {
 
   const initialize = async () => {
     console.log("[PiAuth] Initialize called");
-    // Detect if running in Pi Browser
-    const isPiBrowser = typeof window !== "undefined" && typeof (window as any).Pi !== "undefined";
+    const isPiBrowser =
+      typeof window !== "undefined" &&
+      typeof (window as any).Pi !== "undefined";
 
     console.log("[PiAuth] isPiBrowser:", isPiBrowser);
 
     if (!isPiBrowser) {
-      // Not in Pi Browser - skip authentication and show app normally
-      console.log("[v0] [PiAuth] Not in Pi Browser, skipping authentication");
-      console.log("[v0] [PiAuth] About to set states for non-Pi Browser mode");
-      // Use flushSync to ensure state updates are applied immediately
+      // ✅ Chrome / Vercel - نفتح المنصة بدون Pi auth
+      console.log("[PiAuth] Not in Pi Browser - opening app normally");
       flushSync(() => {
-        setIsAuthenticated(false);
-        setAuthMessage("App loaded (non-Pi Browser mode)");
+        setIsAuthenticated(true); // ← التعديل هنا
+        setAuthMessage("App loaded successfully");
         setIsInitialized(true);
       });
-      console.log("[v0] [PiAuth] State updates flushed for non-Pi Browser mode");
       return;
     }
 
-    // Continue with existing Pi.authenticate() flow
+    // Pi Browser flow
     setHasError(false);
     setRestoredPurchases(null);
     try {
@@ -178,18 +174,16 @@ export function PiAuthProvider({ children }: { children: ReactNode }) {
       setAuthMessage(
         err instanceof Error
           ? err.message
-          : "Authentication failed. Please try again.",
+          : "Authentication failed. Please try again."
       );
     } finally {
-      console.log("[PiAuth] Setting isInitialized to true in finally");
+      console.log("[PiAuth] Setting isInitialized to true");
       setIsInitialized(true);
     }
   };
 
   useEffect(() => {
-    console.log("[v0] [PiAuthProvider] useEffect running, calling initialize");
     initialize();
-    console.log("[v0] [PiAuthProvider] initialize called");
   }, []);
 
   const value: PiAuthContextType = {
@@ -202,8 +196,6 @@ export function PiAuthProvider({ children }: { children: ReactNode }) {
     restoredPurchases,
     reinitialize: initialize,
   };
-
-  console.log("[v0] [PiAuthProvider] Providing context with isInitialized:", isInitialized);
 
   return (
     <PiAuthContext.Provider value={value}>{children}</PiAuthContext.Provider>
