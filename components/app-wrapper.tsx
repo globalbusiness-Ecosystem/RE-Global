@@ -3,14 +3,13 @@
 import type { ReactNode } from "react";
 import { useEffect } from "react";
 import { PiAuthProvider, usePiAuth } from "@/contexts/pi-auth-context";
-import { AuthLoadingScreen } from "./auth-loading-screen";
 import { OfflineBanner } from "./offline-banner";
 import { Toaster } from "sonner";
 import { useServiceWorker } from "@/hooks/use-service-worker";
 import { useOnlineStatus } from "@/hooks/use-online-status";
 
 function AppContent({ children }: { children: ReactNode }) {
-  const { isInitialized, authMessage } = usePiAuth();
+  const { isInitialized } = usePiAuth();
   const { showBanner, setShowBanner } = useOnlineStatus();
   
   useServiceWorker();
@@ -19,11 +18,7 @@ function AppContent({ children }: { children: ReactNode }) {
     document.documentElement.classList.add('dark');
   }, []);
   
-  const shouldShowLoading = !isInitialized;
-  
-  if (shouldShowLoading) {
-    return <AuthLoadingScreen />;
-  }
+  // ✅ مش بنستنى Pi auth على Chrome
   return (
     <>
       <OfflineBanner isVisible={showBanner} onClose={() => setShowBanner(false)} />
