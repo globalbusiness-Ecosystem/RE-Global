@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { db } from '@/lib/firebase';
 import { collection, addDoc, getDocs, deleteDoc, doc } from 'firebase/firestore';
 
-const ADMIN_PIN = '202500';
+const ADMIN_PIN = '3027913091994Qwertyuiop*#@';
 
 export default function AdminDashboard() {
   const [pin, setPin] = useState('');
