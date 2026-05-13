@@ -85,7 +85,7 @@ class AladdinKnowledgeBase {
       advantages: [
         'Higher rental yields',
         'Longer lease terms',
-        'Business credit', 
+        'Business credit',
         'Triple Net Leases (NNN)',
         'Professional tenants',
       ],
@@ -402,7 +402,7 @@ class AladdinKnowledgeBase {
   generateGuidance(budget: number, riskTolerance: string, timeline: string, language: 'en' | 'ar') {
     const strategies = this.getStrategyForInvestor(budget, riskTolerance, timeline);
     const tips = this.getTips('Risk Management', language);
-    
+
     return {
       recommendedStrategies: strategies,
       expertTips: tips,
@@ -437,6 +437,5 @@ class AladdinKnowledgeBase {
   }
 }
 
-export const aladdinKnowledgeBase = new RealEstateKnowledgeBase();
 export const aladdinKnowledgeBase = new AladdinKnowledgeBase();
 export default AladdinKnowledgeBase;
