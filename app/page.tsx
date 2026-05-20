@@ -67,6 +67,12 @@ export default function App() {
   const [logoTaps, setLogoTaps] = useState(0);
   const [showAdminPin, setShowAdminPin] = useState(false);
 
+  // Memoize featured properties
+  const featuredProperties = useMemo(
+    () => properties.filter(p => p.featured === true),
+    [properties]
+  );
+
   // Initialize dark mode once
   useEffect(() => {
     document.documentElement.classList.add('dark');
@@ -142,7 +148,14 @@ export default function App() {
   const renderedPage = useMemo(() => {
     switch (currentPage) {
       case 'home':
-        return <HomePage language={language} onCategoryClick={handlePageChange} />;
+        return (
+          <HomePage
+            language={language}
+            onCategoryClick={handlePageChange}
+            properties={featuredProperties}
+            propertiesLoading={propertiesLoading}
+          />
+        );
       case 'dashboard':
         return <DashboardPage language={language} onBack={() => handlePageChange('home')} />;
       case 'alerts':
@@ -327,9 +340,16 @@ export default function App() {
           </div>
         );
       default:
-        return <HomePage language={language} onCategoryClick={handlePageChange} />;
+        return (
+          <HomePage
+            language={language}
+            onCategoryClick={handlePageChange}
+            properties={featuredProperties}
+            propertiesLoading={propertiesLoading}
+          />
+        );
     }
-  }, [currentPage, language, currency, favorites]);
+  }, [currentPage, language, currency, favorites, featuredProperties, propertiesLoading]);
 
   return (
     <div className="h-screen bg-background text-foreground flex flex-col overflow-hidden dark">
