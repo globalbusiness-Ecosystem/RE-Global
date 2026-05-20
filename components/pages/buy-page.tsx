@@ -1,7 +1,7 @@
 'use client';
 
 import { useProperties } from '@/lib/useProperties';
-import { MapPin, Bed, Maximize2, MapPin as MapIcon, Video, Heart } from 'lucide-react';
+import { MapPin, Bed, Maximize2, Video, Heart } from 'lucide-react';
 import { useState, useMemo, memo } from 'react';
 import { UnifiedPaymentButton } from '@/components/unified-payment-button';
 import { SimplePiPaymentButton } from '@/components/simple-pi-payment-button';
@@ -233,7 +233,11 @@ export default function BuyPage({ language, currency, favorites, toggleFavorite 
   // Memoize favorites lookup for better performance
   const favoriteSet = useMemo(() => new Set(favorites), [favorites]);
 
-  const activeTourProperty = buyProperties.find((p) => p.id === activeTourId);
+  // Filter Firebase properties of type 'buy'
+  const firebaseProperties = useMemo(
+    () => properties.filter(p => p.type === 'buy'),
+    [properties]
+  );
 
   // If viewing tour, show VR Tour viewer
   if (activeTourId) {
@@ -242,7 +246,6 @@ export default function BuyPage({ language, currency, favorites, toggleFavorite 
         property={DEMO_PROPERTY}
         onClose={() => setActiveTourId(null)}
         onBuyClick={() => {
-          // Integrate with Pi payment here
           alert('Buy with Pi feature - Integrate with Pi payment SDK');
         }}
       />
@@ -260,18 +263,71 @@ export default function BuyPage({ language, currency, favorites, toggleFavorite 
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {buyProperties.map((property) => (
-          <PropertyCard
-            key={property.id}
-            property={property}
-            language={language}
-            currency={currency}
-            isFavorite={favoriteSet.has(property.id)}
-            onToggleFavorite={() => toggleFavorite(property.id)}
-            onTourClick={() => setActiveTourId(property.id)}
-          />
-        ))}
+      {/* Firebase Properties - تظهر أول */}
+      {propertiesLoading ? (
+        <div className="text-center text-gray-400 py-4">
+          {language === 'en' ? 'Loading...' : 'جاري التحميل...'}
+        </div>
+      ) : firebaseProperties.length > 0 ? (
+        <div className="space-y-4">
+          <h2 className="text-lg font-semibold text-accent border-b border-accent/30 pb-2">
+            {language === 'en' ? '⭐ Available Properties' : '⭐ العقارات المتاحة'}
+          </h2>
+          {firebaseProperties.map((prop) => (
+            <div
+              key={prop.id}
+              className="rounded-lg border border-accent/40 overflow-hidden hover:border-accent transition cursor-pointer"
+              style={{ backgroundColor: '#1a2332' }}
+            >
+              {prop.image && (
+                <img src={prop.image} alt={prop.title} className="w-full h-44 object-cover" />
+              )}
+              <div className="p-4">
+                <div className="flex justify-between items-start mb-1">
+                  <h4 className="text-white font-semibold text-base">
+                    {language === 'ar' && prop.titleAr ? prop.titleAr : prop.title}
+                  </h4>
+                  {prop.featured && (
+                    <span className="text-xs bg-accent text-black px-2 py-0.5 rounded font-bold">
+                      {language === 'en' ? 'Featured' : 'مميز'}
+                    </span>
+                  )}
+                </div>
+                <p className="text-gray-400 text-sm mb-2">
+                  {language === 'ar' && prop.locationAr ? prop.locationAr : prop.location}
+                </p>
+                <div className="flex justify-between items-center">
+                  <p className="text-accent font-bold text-lg">{prop.price} π</p>
+                  <span className="text-xs text-gray-500 capitalize border border-gray-700 px-2 py-0.5 rounded">
+                    {prop.type}
+                  </span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : null}
+
+      {/* Static Properties */}
+      <div className="space-y-4">
+        {firebaseProperties.length === 0 && (
+          <h2 className="text-lg font-semibold text-white border-b border-gray-700 pb-2">
+            {language === 'en' ? 'Featured Listings' : 'قوائم مميزة'}
+          </h2>
+        )}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {buyProperties.map((property) => (
+            <PropertyCard
+              key={property.id}
+              property={property}
+              language={language}
+              currency={currency}
+              isFavorite={favoriteSet.has(property.id)}
+              onToggleFavorite={() => toggleFavorite(property.id)}
+              onTourClick={() => setActiveTourId(property.id)}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
