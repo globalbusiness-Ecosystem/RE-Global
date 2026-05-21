@@ -13,8 +13,6 @@ import { DEMO_PROPERTY } from '@/lib/vr-tour-config';
 interface HomePageProps {
   language: 'en' | 'ar';
   onCategoryClick?: (categoryId: string) => void;
-  properties?: any[];
-  propertiesLoading?: boolean;
 }
 
 const categories = [
@@ -36,8 +34,6 @@ const categories = [
 export default function HomePage({
   language,
   onCategoryClick,
-  properties = [],
-  propertiesLoading = false,
 }: HomePageProps) {
   const [showAdvisor, setShowAdvisor] = useState(false);
   const [useVoiceAdvisor, setUseVoiceAdvisor] = useState(false);
@@ -69,58 +65,6 @@ export default function HomePage({
               </div>
             ))}
           </div>
-        </div>
-
-        {/* Featured Properties */}
-        <div className="mb-12">
-          <h3 className="text-lg font-semibold text-white mb-4">
-            {language === 'en' ? 'Featured Properties' : 'عقارات مميزة'}
-          </h3>
-          {propertiesLoading ? (
-            <div className="text-center text-gray-400 py-8">
-              {language === 'en' ? 'Loading...' : 'جاري التحميل...'}
-            </div>
-          ) : properties.length === 0 ? (
-            <div className="text-center text-gray-500 py-8 rounded-lg border border-gray-800">
-              {language === 'en' ? 'No properties yet' : 'لا توجد عقارات بعد'}
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {properties.map((prop) => (
-                <div
-                  key={prop.id}
-                  onClick={() => onCategoryClick?.(prop.type === 'rent' ? 'rent' : 'buy')}
-                  className="rounded-lg border border-gray-800 overflow-hidden cursor-pointer hover:border-accent transition"
-                  style={{ backgroundColor: '#1a2332' }}
-                >
-                  {prop.image && (
-                    <img src={prop.image} alt={prop.title} className="w-full h-44 object-cover" />
-                  )}
-                  <div className="p-4">
-                    <div className="flex justify-between items-start mb-1">
-                      <h4 className="text-white font-semibold text-base">
-                        {language === 'ar' && prop.titleAr ? prop.titleAr : prop.title}
-                      </h4>
-                      {prop.featured && (
-                        <span className="text-xs bg-accent text-black px-2 py-0.5 rounded font-bold">
-                          {language === 'en' ? 'Featured' : 'مميز'}
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-gray-400 text-sm mb-2">
-                      {language === 'ar' && prop.locationAr ? prop.locationAr : prop.location}
-                    </p>
-                    <div className="flex justify-between items-center">
-                      <p className="text-accent font-bold text-lg">{prop.price} π</p>
-                      <span className="text-xs text-gray-500 capitalize border border-gray-700 px-2 py-0.5 rounded">
-                        {prop.type}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
         </div>
 
         {/* Categories */}
